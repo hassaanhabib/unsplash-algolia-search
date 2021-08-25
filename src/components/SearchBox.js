@@ -3,8 +3,6 @@ import { Input, AutoComplete } from "antd";
 import "antd/dist/antd.css";
 import algoliasearch from "algoliasearch";
 import _ from "lodash";
-import { searchImages } from "../api/Unsplash";
-import router from "next/router";
 import { useRouter } from "next/router";
 
 let searchClient;

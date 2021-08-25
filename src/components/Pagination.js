@@ -11,10 +11,12 @@ function Pagination(props) {
       <div className={styles2.paginator}>
         <div
           onClick={() => {
+            window.scrollTo(0, 0);
             if (pageNumber > 1) {
-              router
-                .push(`/unsplash?keywords=${keywords}&page=${pageNumber - 1}`)
-                .then(() => window.scrollTo(0, 0));
+              router.push(
+                `/unsplash?keywords=${keywords}&page=${pageNumber - 1}`
+              );
+              //.then(() => window.scrollTo(0, 0));
             }
           }}
           className={pageNumber === 1 ? styles2.disabled : styles2.active}
@@ -24,10 +26,13 @@ function Pagination(props) {
         <div>#{pageNumber}</div>
         <div
           onClick={() => {
+            window.scrollTo(0, 0);
+
             if (pageNumber < totalPages) {
-              router
-                .push(`/unsplash?keywords=${keywords}&page=${pageNumber + 1}`)
-                .then(() => window.scrollTo(0, 0));
+              router.push(
+                `/unsplash?keywords=${keywords}&page=${pageNumber + 1}`
+              );
+              //.then(() => window.scrollTo(0, 0));
             }
           }}
           className={
