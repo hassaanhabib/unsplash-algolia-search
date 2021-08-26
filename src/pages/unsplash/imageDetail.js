@@ -7,25 +7,40 @@ import styles2 from "../../styles/Home.module.css";
 import ImageDetailCard from "../../components/ImageDetailCard";
 import { useDispatch, useSelector } from "react-redux";
 
-function ImageDetail() {
+const isDataComplete = (data) => {
+  const { links, alt_description, description, location } = data;
+  return !!links && !!alt_description && !!description && !!location;
+};
+
+function ImageDetail(props) {
+  const { imageData: imgData } = props;
+
   const content = useSelector((state) => state);
-  const { imageDetailData = [] } = content;
-  const { loading, error, data } = imageDetailData;
+  const { imageDetailData } = content;
+  const { data: rData } = imageDetailData;
+
   const router = useRouter();
   const { imageId } = router.query;
-  const [imageDetailFromAPI, setImageDetailFromAPI] = useState();
+
+  const [loading, setLoadingState] = useState(
+    !(imgData || isDataComplete(rData || {}))
+  );
+  const [imageDetailFromAPI, setImageDetailFromAPI] = useState(
+    !!imgData ? imgData : !!rData ? rData : undefined
+  );
 
   useEffect(() => {
-    if (!imageId) {
-      return;
-    }
     async function fetchMyAPI() {
       try {
         let response = await searchSpecificImage(imageId);
         setImageDetailFromAPI(response.data);
+        setLoadingState(false);
       } catch (error) {
         console.log(error);
       }
+    }
+    if (!imageId && loading) {
+      return;
     }
     fetchMyAPI();
   }, [imageId]);
@@ -41,70 +56,39 @@ function ImageDetail() {
       >
         Go Back
       </div>
-
-      {/* src={data.src}
-          alt_description={data.title}
-          description={imageDetailFromAPI.description}
-          city={imageDetailFromAPI.location.city}
-          country={imageDetailFromAPI.location.country}
-          locationName={imageDetailFromAPI.location.name} */}
-      {!!imageDetailFromAPI ? (
-        <ImageDetailCard
-          src={imageDetailFromAPI.links.download}
-          alt_description={imageDetailFromAPI.alt_description}
-          description={imageDetailFromAPI.description}
-          city={imageDetailFromAPI.location.city}
-          country={imageDetailFromAPI.location.country}
-          locationName={imageDetailFromAPI.location.name}
-        />
-      ) : !!data ? (
-        <ImageDetailCard
-          src={data.src}
-          alt_description={data.title}
-          description={"Fetching"}
-          city={"Fetching"}
-          country={"Fetching"}
-          locationName={"Fetching"}
-        />
-      ) : (
-        <ImageDetailCard
-          src={"Fetching"}
-          alt_description={"Fetching"}
-          description={"Fetching"}
-          city={"Fetching"}
-          country={"Fetching"}
-          locationName={"Fetching"}
-        />
-      )}
+      <ImageDetailCard loading={loading} data={imageDetailFromAPI} />
     </div>
   );
 }
 
-// export const getServerSideProps = async (context) => {
-//   const { imageId } = context.query;
-//   let response;
-//   try {
-//     response = await searchSpecificImage(imageId);
-//   } catch (error) {
-//     return {
-//       props: {
-//         imageData: [],
-//       },
-//     };
-//   }
-//   const { data } = response;
-//   if (!data) {
-//     return {
-//       props: {
-//         imageData: [],
-//       },
-//     };
-//   }
-//   return {
-//     props: {
-//       imageData: data,
-//     },
-//   };
-// };
+export const getServerSideProps = async (context) => {
+  const isServerReq = (req) => !req.url.startsWith("/_next");
+
+  if (!isServerReq(context.req)) {
+    return {
+      props: {},
+    };
+  }
+  const { imageId } = context.query;
+  let response;
+  try {
+    response = await searchSpecificImage(imageId);
+  } catch (error) {
+    return {
+      props: {},
+    };
+  }
+  const { data } = response;
+  if (!data) {
+    return {
+      props: {},
+    };
+  }
+  return {
+    props: {
+      imageData: data,
+    },
+  };
+};
 
 export default ImageDetail;

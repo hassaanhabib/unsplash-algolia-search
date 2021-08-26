@@ -14,16 +14,15 @@ const myLoader = ({ src, width, quality }) => {
 
 function ImageCard(props) {
   const dispatch = useDispatch();
-  const { id } = props;
-  const { src } = props;
-  const { title } = props;
+  const { id, data, src, title } = props;
+  const { links, description } = data;
 
   return (
     <div
       style={{
         height: 400,
         width: 500,
-        margin: "15px 0px 25px 0",
+        margin: "15px 10px 25px 10px",
         cursor: "pointer",
       }}
       className={styles.card}
@@ -37,11 +36,11 @@ function ImageCard(props) {
           title={title}
           alt={title}
           onClick={() => {
-            saveImageData(props, dispatch);
+            saveImageData(data, dispatch);
             router.push(`unsplash/imageDetail?imageId=${id}`);
           }}
-          height="350%"
-          width={450}
+          height="400"
+          width="500"
         />
       </LazyLoad>
     </div>

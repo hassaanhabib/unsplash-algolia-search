@@ -9,6 +9,7 @@ function ImageGrid(props) {
     <div className={styles.grid}>
       {results.map((image) => (
         <ImageCard
+          data={image}
           key={image.id}
           id={image.id}
           src={image.links.download}
