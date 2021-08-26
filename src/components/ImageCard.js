@@ -2,8 +2,11 @@ import React from "react";
 import styles from "../styles/Home.module.css";
 import LazyLoad from "react-lazyload";
 import router from "next/router";
+import { saveImageData } from "../actions/UnsplashImageDetailAction";
+import { useDispatch, useSelector } from "react-redux";
 
 function ImageCard(props) {
+  const dispatch = useDispatch();
   const { id } = props;
   const { src } = props;
   const { title } = props;
@@ -16,6 +19,7 @@ function ImageCard(props) {
           title={title}
           alt={title}
           onClick={() => {
+            saveImageData(props, dispatch);
             router.push(`unsplash/imageDetail?imageId=${id}`);
           }}
           height={400}

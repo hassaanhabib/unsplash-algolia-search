@@ -8,7 +8,7 @@ import Pagination from "../../components/Pagination";
 
 function UnsplashSearchHome({ pageNumber, imageData, keywords, totalPages }) {
   console.log(imageData);
-  const { results } = imageData;
+  const { results = [] } = imageData;
   return (
     <div>
       <Navigation />
